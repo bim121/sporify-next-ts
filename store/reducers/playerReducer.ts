@@ -1,6 +1,6 @@
 import { PlayerAction, PlayerActionTypes, PlayerState } from "@/types/player"
 
-export const initialState: PlayerState = {
+const initialState: PlayerState = {
     currentTime: 0,
     duration: 0,
     active: null,

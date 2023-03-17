@@ -1,5 +1,6 @@
 import NavBar from "@/component/NavBar";
 import { TrackList } from "@/component/TrackList";
+import { useTypedSelector } from "@/hooks/useTypeSelector";
 import MainLayout from "@/layouts/MainLayout";
 import { ITrack } from "@/types/track";
 import { Box, Button, Card, Grid } from "@mui/material";
