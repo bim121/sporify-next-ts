@@ -1,6 +1,7 @@
 import MainLayout from '@/layouts/MainLayout';
 import { ITrack } from '@/types/track';
-import { Button, Grid } from '@mui/material';
+import { CommentsDisabled } from '@mui/icons-material';
+import { Button, Grid, TextField } from '@mui/material';
 import { useRouter } from 'next/router';
 import React from 'react';
 
@@ -27,6 +28,30 @@ const TrackPage = () => {
                         <h1>Прослушиваний - {track.listens}</h1>
                     </div>
                 </Grid>
+                <h1>Слова в треке</h1>
+                <p>{track.text}</p>
+                <h1>Коментарии</h1>
+                <Grid container>
+                    <TextField
+                        label="Ваше имя"
+                        fullWidth
+                    />
+                    <TextField
+                        label="Комментарий"
+                        fullWidth
+                        multiline
+                        rows={4}
+                    />
+                    <Button>Отправить</Button>
+                </Grid>
+                <div>
+                    {track.comments.map(comment =>
+                        <div>
+                            <div>Автор - {comment.username}</div>
+                            <div>Коментарии - {comment.text}</div>
+                        </div>
+                        )}
+                </div>
            </MainLayout>
         </div>
     )
