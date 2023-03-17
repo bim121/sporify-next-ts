@@ -1,4 +1,5 @@
 import NavBar from "@/component/NavBar";
+import Player from "@/component/Player";
 import { Container } from "@mui/material";
 
 import React, { ReactNode } from "react";
@@ -15,6 +16,7 @@ const MainLayout: React.FC<ContainerProps> = ({ children }) =>
             <Container style = {{margin: '90px 0'}}>
                 {children}
             </Container>
+            <Player />
         </>
     )
 }
