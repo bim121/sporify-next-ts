@@ -12,7 +12,7 @@ const TrackProgress: React.FC<TrackProgressProps> = ({left, right, onChange}) =>
         <div>
             <input 
                 type="range"
-                min={left}
+                min={0}
                 max={right} 
                 value={left}
                 onChange={onChange}

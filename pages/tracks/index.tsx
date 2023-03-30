@@ -1,7 +1,10 @@
-import NavBar from "@/component/NavBar";
+
 import { TrackList } from "@/component/TrackList";
+import { useFetcher } from "@/hooks/useFetch";
 import { useTypedSelector } from "@/hooks/useTypeSelector";
 import MainLayout from "@/layouts/MainLayout";
+import { NextThunkDispatch, wrapper } from "@/store";
+import { fetchTracks } from "@/store/actions-creators/track";
 import { ITrack } from "@/types/track";
 import { Box, Button, Card, Grid } from "@mui/material";
 import { useRouter } from "next/router";
@@ -9,14 +12,27 @@ import React from "react";
 
 const Index = () => {
     const router = useRouter();
-    const tracks: ITrack[] = [
-        {_id: "1", name: "name1", artist: "artist1", text:"text1", listens: 5, audio: "http://localhost:5001/audio/0473512f-665f-4f85-a58e-b1f67b432407.mp3", 
-            picture: "http://localhost:5001/image/c2f32f00-623d-49f4-85aa-89af9feecad6.jpg", comments: []},
-        {_id: "2", name: "name2", artist: "artist2", text:"text2", listens: 5, audio: "http://localhost:5001/audio/e3536d37-abed-4b57-88b8-6df38c0602c8.mp3", 
-            picture: "http://localhost:5001/image/3c8b0631-88ff-4aac-9067-4dbce17735c5.jpg", comments: []},
-        {_id: "3", name: "name3", artist: "artist3", text:"text3", listens: 5, audio: "http://localhost:5001/audio/e3faaafb-e46b-43d3-bde7-98635900635f.mp3", 
-            picture: "http://localhost:5001/image/a0838e0b-17de-42fd-8210-c83dd6b10082.jpg", comments: []},
-    ]
+    useFetcher(fetchTracks);
+    const {tracks, error} = useTypedSelector(state => state.track)
+    
+    //const tracks: ITrack[] = [
+    //    {_id: "1", name: "name1", artist: "artist1", text:"text1", listens: 5, audio: "http://localhost:5001/audio/fb5d6865-98ab-4d26-a3f4-cfd89cf18041.mp3", 
+    //        picture: "http://localhost:5001/image/b70f0949-1856-4291-98bc-393262662210.jpg", comments: []},
+    //    {_id: "2", name: "name2", artist: "artist2", text:"text2", listens: 5, audio: "http://localhost:5001/audio/155ea5b3-1e79-4ee1-b653-5f098a2da2b4.mp3", 
+    //        picture: "http://localhost:5001/image/b49ee0d6-3720-4a52-b3f1-270690e37e0d.jpg", comments: []},
+    //    {_id: "3", name: "name3", artist: "artist3", text:"text3", listens: 5, audio: "http://localhost:5001/audio/399a074b-2bb9-4f98-9798-b025cd3a5db6.mp3", 
+    //        picture: "http://localhost:5001/image/144731a1-f29f-4bf9-b203-6408a64feb6f.jpg", comments: []},
+    //]
+
+
+    if(error){
+        return <MainLayout>
+            <h1>{error}</h1>
+        </MainLayout>
+    }else{
+        console.log("df" + tracks);
+    }
+    
 
     return(
         <>

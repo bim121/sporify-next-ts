@@ -1,44 +1,82 @@
+import { useActions } from '@/hooks/useAction';
+import { useTypedSelector } from '@/hooks/useTypeSelector';
 import { Pause, PlayArrow, VolumeUp } from '@mui/icons-material';
 import { Grid, IconButton } from '@mui/material';
-import styles from '../styles/Player.module.scss';
-import react from 'react';
-import { ITrack } from '@/types/track';
-import TrackProgress from './TrackProgress';
-import { useTypedSelector } from '@/hooks/useTypeSelector';
-import { useActions } from '@/hooks/useAction';
+import React, {useEffect} from 'react';
+
+import styles from '../styles/Player.module.scss'
+import {ITrack} from "../types/track";
+import TrackProgress from "./TrackProgress";
+
+
+let audio: any;
 
 const Player = () => {
-    const track: ITrack = {_id: "1", name: "name1", artist: "artist1", text:"text1", listens: 5, audio: "http://localhost:5001/audio/0473512f-665f-4f85-a58e-b1f67b432407.mp3", 
-        picture: "http://localhost:5001/image/c2f32f00-623d-49f4-85aa-89af9feecad6.jpg", comments: []}
-    
     const {pause, volume, active, duration, currentTime} = useTypedSelector(state => state.player)
-    const {pauseTrack, playTrack} = useActions();
+    const {pauseTrack, playTrack, setVolume, setCurrentTime, setDuration, setActiveTrack} = useActions()
 
-    const play = () => {
-        if(pause){
-            playTrack();
-        }else{
-            pauseTrack();
+    useEffect(() => {
+        if (!audio) {
+            audio = new Audio()
+        } else {
+            setAudio()
+            play()
+        }
+    }, [active])
+
+    const setAudio = () => {
+        if (active) {
+            audio.src = 'http://localhost:5001/' + active.audio
+            audio.volume = volume / 100
+            audio.onloadedmetadata = () => {
+                setDuration(Math.ceil(audio.duration))
+            }
+            audio.ontimeupdate = () => {
+                setCurrentTime(Math.ceil(audio.currentTime))
+            }
         }
     }
 
-    return(
+    const play = () => {
+        if (pause ) {
+            playTrack()
+            audio.play()
+        } else {
+            pauseTrack()
+            audio.pause()
+        }
+    }
+
+    const changeVolume = (e: React.ChangeEvent<HTMLInputElement>) => {
+        audio.volume = Number(e.target.value) / 100
+        setVolume(Number(e.target.value))
+    }
+    const changeCurrentTime = (e: React.ChangeEvent<HTMLInputElement>) => {
+        audio.currentTime = Number(e.target.value)
+        setCurrentTime(Number(e.target.value))
+    }
+
+    if (!active) {
+        return null
+    }
+
+    return (
         <div className={styles.player}>
-            <IconButton onClick = {play}>
-                {!pause
+            <IconButton onClick={play}>
+                {pause
                     ? <PlayArrow/>
                     : <Pause/>
                 }
             </IconButton>
-            <Grid container direction="column" style={{width:200, margin: '0 20px'}}>
-                <div>{track.name}</div>
-                <div style={{fontSize:12, color:'grey'}}>{track.artist}</div>
+            <Grid container direction="column" style={{width: 200, margin: '0 20px'}}>
+                <div>{active?.name}</div>
+                <div style={{fontSize: 12, color: 'gray'}}>{active?.artist}</div>
             </Grid>
-            <TrackProgress left={0} right={100} onChange={() => ({})} />
-            <VolumeUp style={{marginLeft: 'audio'}}/>
-            <TrackProgress left={0} right={100} onChange={() => ({})} />
+            <TrackProgress left={currentTime} right={duration} onChange={changeCurrentTime}/>
+            <VolumeUp style={{marginLeft: 'auto'}}/>
+            <TrackProgress left={volume} right={100} onChange={changeVolume}/>
         </div>
-    )
-}
+    );
+};
 
 export default Player;
