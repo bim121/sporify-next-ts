@@ -8,10 +8,12 @@ import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 
-const TrackPage = ({serverTrack}) => {
-   const [track, setTrack] = useState(serverTrack); 
-    //const track: ITrack = {_id: "1", name: "name1", artist: "artist1", text:"text1", listens: 5, audio: "http://localhost:5001/audio/0473512f-665f-4f85-a58e-b1f67b432407.mp3", 
-    //    picture: "http://localhost:5001/image/c2f32f00-623d-49f4-85aa-89af9feecad6.jpg", comments: []}
+interface IPropsTrack{
+    serverTrack: any;
+}
+
+const TrackPage = (props: IPropsTrack) => {
+   const [track, setTrack] = useState(props.serverTrack); 
 
     const router = useRouter();
     const username = useInput('');
@@ -19,7 +21,7 @@ const TrackPage = ({serverTrack}) => {
 
     const addComment = async () => {
         try{
-                const response = await axios.post('http://localhost:5001/tracks/comment', {
+                const response = await axios.post('http://localhost:5000/tracks/comment', {
                     username: username.value,
                     text: text.value,
                     trackId: track._id
@@ -41,7 +43,7 @@ const TrackPage = ({serverTrack}) => {
                     К списку
                 </Button>
                 <Grid container style={{margin: '20px 0'}}>
-                    <img src={"http://localhost:5001/" + track.picture} width={200} alt="#"/>
+                    <img src={"http://localhost:5000/" + track.picture} width={200} alt="#"/>
                     <div style={{marginLeft: 30}}>
                         <h1>Название трека - {track.name}</h1>
                         <h1>Исполнитель - {track.artist}</h1>
@@ -67,7 +69,7 @@ const TrackPage = ({serverTrack}) => {
                     <Button onClick={addComment}>Отправить</Button>
                 </Grid>
                 <div>
-                    {track.comments.map(comment =>
+                    {track.comments.map((comment : any) =>
                         <div>
                             <div>Автор - {comment.username}</div>
                             <div>Коментарии - {comment.text}</div>
@@ -82,7 +84,7 @@ const TrackPage = ({serverTrack}) => {
 export default TrackPage;
 
 export const getServerSideProps: GetServerSideProps = async({params}) => {
-    const url = 'http://localhost:5001/tracks/' + params?.id;
+    const url = 'http://localhost:5000/tracks/' + params?.id;
     const response = await axios.get(url)
     return {
         props: {

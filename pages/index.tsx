@@ -1,6 +1,4 @@
-import NavBar from "@/component/NavBar";
 import MainLayout from "@/layouts/MainLayout";
-import { Button } from "@mui/material";
 import React from "react";
 
 const Index = () => {
