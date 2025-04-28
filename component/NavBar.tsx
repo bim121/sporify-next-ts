@@ -23,9 +23,9 @@ import { useRouter } from 'next/router';
 const drawerWidth = 240;
 
 const menuItems = [
-    {text: "Главная", href: '/'},
-    {text: "Список треков", href: '/tracks'},
-    {text: "Список альбомов", href: '/albums'}
+    {text: "Main Page", href: '/'},
+    {text: "Track List", href: '/tracks'},
+    {text: "Album List", href: '/albums'}
 ]
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
@@ -54,6 +54,7 @@ interface AppBarProps extends MuiAppBarProps {
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== 'open',
 })<AppBarProps>(({ theme, open }) => ({
+  backgroundColor: '#282728', 
   transition: theme.transitions.create(['margin', 'width'], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
@@ -115,6 +116,8 @@ export default function NavBar() {
           '& .MuiDrawer-paper': {
             width: drawerWidth,
             boxSizing: 'border-box',
+            backgroundColor: 'rgba(54, 53, 53, 1)',
+            color: 'rgba(214, 214, 215, 1)'
           },
         }}
         variant="persistent"
