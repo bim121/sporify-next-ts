@@ -1,6 +1,6 @@
 import MainLayout from "@/layouts/MainLayout";
 import React from "react";
-
+import Footer from '@/component/Footer';
 const Index = () => {
     return (
         <>
@@ -11,7 +11,7 @@ const Index = () => {
                     <button className="start-button">Start</button>
                 </div>
             </MainLayout>
-
+            <Footer/>
             <style jsx>
                 {`
                     .center {

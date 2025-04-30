@@ -1,0 +1,78 @@
+.site-footer {
+  background-color: #111;
+  color: #ccc;
+  padding: 40px 20px 20px;
+  font-family: sans-serif;
+}
+
+.footer-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.footer-section h2 {
+  color: #fff;
+  margin-bottom: 15px;
+  font-size: 1.1em;
+}
+
+.footer-section p,
+.footer-section li {
+  font-size: 0.9em;
+  line-height: 1.6;
+  color: #ccc;
+}
+
+.footer-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-section ul li a {
+  color: #ccc;
+  text-decoration: none;
+}
+
+.footer-section ul li a:hover {
+  text-decoration: underline;
+}
+
+.footer-section form {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-section input[type="email"] {
+  padding: 10px;
+  border: none;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  background-color: #222;
+  color: #fff;
+}
+
+.footer-section button {
+  padding: 10px;
+  background-color: #0077ff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.footer-section button:hover {
+  background-color: #005fcc;
+}
+
+.footer-bottom {
+  text-align: center;
+  margin-top: 30px;
+  font-size: 0.8em;
+  color: #777;
+  border-top: 1px solid #333;
+  padding-top: 15px;
+}
+
