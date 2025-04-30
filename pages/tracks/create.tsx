@@ -40,7 +40,7 @@ const Create = () => {
             <MainLayout >
                 <StepWrapper activeStep={activeStep}>
                    {activeStep === 0 && 
-              
+                        
                         <Grid container direction={'column'} style={{padding: 20}} >
                             <TextField
                                 {...name}
