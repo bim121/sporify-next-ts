@@ -6,11 +6,12 @@ interface StepWrapperProps{
     children?: ReactNode;
 }
 
-const steps = ['Информация о треке', 'Загрузите обложку', 'Загрузите сам трек']
+const steps = ['Track Info', 'Load Picture', 'Load Track']
 
 const StepWrapper: React.FC<StepWrapperProps> = ({activeStep, children}) => {
     return(
-        <div className='center'> 
+        <div style={{color: 'white'}}>
+        <div className='center' style={{color: 'white'}}> 
             <Container className='center'>
                 <Stepper activeStep={activeStep}>
                     {steps.map((step, index) =>
@@ -18,11 +19,11 @@ const StepWrapper: React.FC<StepWrapperProps> = ({activeStep, children}) => {
                             key={step}
                             completed={activeStep > index}
                         >
-                            <StepLabel>{step}</StepLabel>
+                            <StepLabel sx={{ color: 'white', '& .MuiStepLabel-label': { color: 'white' } }}>{step}</StepLabel>
                         </Step>
                     )}
                 </Stepper>
-                <Grid container justifyContent="center" style={{margin: '70px 0', height: 270}}>
+                <Grid container justifyContent="center" style={{margin: '70px 0', height: 270, color: 'white'}} >
                         <Card style={{width: 600}}>
                             {children}
                         </Card>
@@ -35,9 +36,11 @@ const StepWrapper: React.FC<StepWrapperProps> = ({activeStep, children}) => {
                         flex-direction: column;
                         justify-content: center;
                         width: 100vw;
+                        color: white;
                     }
                 `}
             </style>
+        </div>
         </div>
     )
 }

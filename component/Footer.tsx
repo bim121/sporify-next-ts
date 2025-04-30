@@ -5,7 +5,7 @@ import styles from '../styles/Footer.module.scss';
 const Footer: React.FC = () => {
   return (
     <footer className={styles['bg-zinc-900 text-zinc-400 py-8']}>
-        <div className={styles['footer-container']}>
+    <div className={styles['footer-container']}>
 
     <div className={styles['footer-section']}>
       <h2>About Us</h2>
@@ -32,13 +32,7 @@ const Footer: React.FC = () => {
     </div>
 
     
-    <div className={styles['footer-section']}>
-      <h2>Newsletter</h2>
-      <form>
-        <input type="email" placeholder="Your email"/>
-        <button type="submit">Subscribe</button>
-      </form>
-    </div>
+    
   </div>
 
   <div className={styles['footer-bottom']}>

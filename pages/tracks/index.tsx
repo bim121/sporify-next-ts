@@ -27,13 +27,13 @@ const Index = () => {
 
     return(
         <>
-            <MainLayout>
-                <Grid container justifyContent='center' width={1920}>
-                    <Card style = {{width: 1100}}>
-                        <Box p={3}>
-                            <Grid container justifyContent='space-between'>
-                                <h1>Список треков</h1>
-                                <Button onClick = {() => router.push('/tracks/create')}>Загрузить</Button>
+            <MainLayout >
+                <Grid container justifyContent='center' width={'cover'} >
+                    <Card style = {{width: 1100}} >
+                        <Box p={3} style={{backgroundColor:'rgba(54, 53, 53, 1)'}}>
+                            <Grid container justifyContent='space-between' color = {'rgba(214, 214, 215, 1)'}>
+                                <h1>Track List</h1>
+                                <Button onClick = {() => router.push('/tracks/create')}>Load track</Button>
                             </Grid>   
                         </Box>
                         <TrackList tracks={tracks}/>   

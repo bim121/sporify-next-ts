@@ -20,7 +20,7 @@ const Index = () => {
                         flex-direction: column;
                         align-items: center;
                         justify-content: center;
-                        width: 100vw;
+                        width: cover;
                         height: 80vh;
                         background: linear-gradient(135deg, #121212,rgb(187, 187, 187));
                         color: white;

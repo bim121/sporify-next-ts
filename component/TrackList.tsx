@@ -9,11 +9,12 @@ interface TrackListProps{
 
 export const TrackList: React.FC<TrackListProps> = ({tracks})=>{
     return (
-        <Grid container direction="column">
+        <Grid container direction="column" 
+        style={{backgroundColor:'rgba(54, 53, 53, 1)'}}>
             <Box p = {2}>
                 {tracks.map(track =>
                         <TrackItem 
-                            key={track._id}
+                            key={track.id}
                             track={track}
                         />
                     )}

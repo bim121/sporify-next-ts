@@ -20,25 +20,27 @@ const TrackItem: React.FC<TrackItemProps> = ({track, active = false}) => {
         setActiveTrack(track);
         playTrack()
     }
-
+    
     return(
-        <Card className={styles.track} onClick={() => router.push('/tracks/' + track._id)}>
-            <IconButton onClick = {play}>
+        
+        <Card className={styles.track} onClick={() => router.push('/tracks/' + track.id)} >
+            <IconButton onClick = {play} >
                 {!active
                     ? <PlayArrow/>
                     : <Pause/>
                 }
             </IconButton>
-            <img width={70} height={70} src={'http://localhost:5000/'+track.picture} alt="#"/>
-            <Grid container direction="column" style={{width:200, margin: '0 20px'}}>
+            <img width={70} height={70} src={'http://localhost:5000/'+track.picture} alt="#" />
+            <Grid container direction="column" style={{width:200, margin: '0 20px', color:'rgba(214, 214, 215, 1)', }}  >
                 <div>{track.name}</div>
-                <div style={{fontSize:12, color:'grey'}}>{track.artist}</div>
+                <div style={{fontSize:12, color:'rgba(214, 214, 215, 1)'}}>{track.artist}</div>
             </Grid>
             {active && <div>02:42 / 03.22</div>}
-            <IconButton style = {{marginLeft: 'auto'}} onClick = {e => e.stopPropagation()}>
+            <IconButton style = {{marginLeft: 'auto'}} onClick = {e => e.stopPropagation()} >
                 <Delete />
             </IconButton>
         </Card>
+        
     )
 }
 

@@ -37,44 +37,47 @@ const Create = () => {
 
     return(
         <>
-            <MainLayout>
+            <MainLayout >
                 <StepWrapper activeStep={activeStep}>
                    {activeStep === 0 && 
-                        <Grid container direction={'column'} style={{padding: 20}}>
+              
+                        <Grid container direction={'column'} style={{padding: 20}} >
                             <TextField
                                 {...name}
                                 style={{marginTop: 10}}
-                                label={"Название трека"}
+                                label={"Track Name"}
                             />
                             <TextField
                                 {...artist}
                                 style={{marginTop: 10}}
-                                label={"Имя исполнителя"}
+                                label={"Author"}
                             />
-                            <TextField
+                            <TextField 
                                 {...text}
                                 style={{marginTop: 10}}
-                                label={"Слова к треку"}
+                                label={"Album"}
                                 multiline
                                 rows={3}
                             />
                         </Grid>
+                       
                    }
                    {activeStep === 1 && 
                     <FileUpload setFile={setPicture} accept="image/*">
-                        <Button>Загрузить изображение</Button>
+                        <Button>Select picture</Button>
                     </FileUpload>
                    }
                    {activeStep === 2 && 
                     <FileUpload setFile={setAudio} accept="audio/*">
-                    <Button>Загрузить аудио</Button>
+                    <Button>Select audio</Button>
                 </FileUpload>
                    }
                 </StepWrapper>
+                
                 <Grid container justifyContent='center' width='100vw'>
                     <Grid container justifyContent='space-between' width='70%'>
-                        <Button disabled={activeStep===0} onClick={back}>Назад</Button>
-                        <Button onClick={next}>Далее</Button>
+                        <Button disabled={activeStep===0} onClick={back}>Back</Button>
+                        <Button onClick={next}>Next</Button>
                     </Grid>
                 </Grid>
             </MainLayout>
