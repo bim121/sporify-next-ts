@@ -5,13 +5,16 @@ export interface IComment{
 }
 
 export interface ITrack{
-    _id: string;
-    name: string;
+    id: string;
+    title: string;
     artist: string;
-    text: string;
-    listens: number;
-    picture: string;
+    description: string;
+    popularity: number;
+    image: string;
+    genre: string;
     audio: string;
+    releaseDate: string;
+    duration: string;
     comments: IComment[]
 }
 

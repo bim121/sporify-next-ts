@@ -1,94 +1,274 @@
-import { useInput } from '@/hooks/useInput';
-import MainLayout from '@/layouts/MainLayout';
-import { ITrack } from '@/types/track';
-import { CommentsDisabled } from '@mui/icons-material';
-import { Button, Grid, TextField } from '@mui/material';
-import axios from 'axios';
-import { GetServerSideProps } from 'next';
+import React, { useState, useEffect } from 'react';
+import { 
+  Box, 
+  Container, 
+  Typography, 
+  Grid, 
+  Paper, 
+  Chip,
+  IconButton,
+  Divider,
+  Button,
+  Stack
+} from '@mui/material';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import ShareIcon from '@mui/icons-material/Share';
+import AddIcon from '@mui/icons-material/Add';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import comments from '@/data/comments';
+import CommentForm from '@/component/CommentForm';
+import CommentList from '@/component/CommentList';
+import { ITrack } from '@/types/track';
+import { useFetcher } from '@/hooks/useFetch';
+import { fetchTracks } from '@/store/actions-creators/track';
+import { useTypedSelector } from '@/hooks/useTypeSelector';
+import MainLayout from '@/layouts/MainLayout';
+import { Comment } from "@/types/comment";
+import { useActions } from '@/hooks/useAction';
 
-interface IPropsTrack{
-    serverTrack: any;
-}
+function TrackDetailPage() {
+  const [track, setTrack] = useState<ITrack | null>(null);
+  const [trackComments, setTrackComments] = useState<Comment[]>([]); 
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+  const { id } = router.query;
+  useFetcher(fetchTracks);
+  const {tracks, error} = useTypedSelector(state => state.track)
+  const { playTrack, pauseTrack, setActiveTrack } = useActions();
+  const { active, pause } = useTypedSelector(state => state.player);
 
-const TrackPage = (props: IPropsTrack) => {
-   const [track, setTrack] = useState(props.serverTrack); 
-
-    const router = useRouter();
-    const username = useInput('');
-    const text = useInput('');
-
-    const addComment = async () => {
-        try{
-                const response = await axios.post('http://localhost:5000/tracks/comment', {
-                    username: username.value,
-                    text: text.value,
-                    trackId: track._id
-                })
-            setTrack({...track, comments: [...track.comments, response.data]})
-        }catch(e){
-            console.log(e);
-        }
-        
+  useEffect(() => {
+    if (!tracks.length) {
+      fetchTracks(); 
     }
-
-    return(
-        <div>
-            <MainLayout>
-                <Button
-                    variant = {"outlined"}
-                    style={{fontSize: 32}}
-                    onClick={() => router.push('/tracks')}>
-                    К списку
-                </Button>
-                <Grid container style={{margin: '20px 0'}}>
-                    <img src={"http://localhost:5000/" + track.picture} width={200} alt="#"/>
-                    <div style={{marginLeft: 30}}>
-                        <h1>Название трека - {track.name}</h1>
-                        <h1>Исполнитель - {track.artist}</h1>
-                        <h1>Прослушиваний - {track.listens}</h1>
-                    </div>
-                </Grid>
-                <h1>Слова в треке</h1>
-                <p>{track.text}</p>
-                <h1>Коментарии</h1>
-                <Grid container>
-                    <TextField
-                        label="Ваше имя"
-                        fullWidth
-                        {...username}
-                    />
-                    <TextField
-                        label="Комментарий"
-                        fullWidth
-                        multiline
-                        rows={4}
-                        {...text}
-                    />
-                    <Button onClick={addComment}>Отправить</Button>
-                </Grid>
-                <div>
-                    {track.comments.map((comment : any) =>
-                        <div>
-                            <div>Автор - {comment.username}</div>
-                            <div>Коментарии - {comment.text}</div>
-                        </div>
-                        )}
-                </div>
-           </MainLayout>
-        </div>
-    )
-}
-
-export default TrackPage;
-
-export const getServerSideProps: GetServerSideProps = async({params}) => {
-    const url = 'http://localhost:5000/tracks/' + params?.id;
-    const response = await axios.get(url)
-    return {
-        props: {
-            serverTrack: response.data
+  }, [tracks]);
+  
+  useEffect(() => {  
+    if (id && tracks.length > 0) {
+        const foundTrack = tracks.find(t =>Number(t.id) === Number(id));
+        if (foundTrack) {
+            setTrack(foundTrack);
+            const trackComments = comments[Number(foundTrack.id)] || [];
+            setTrackComments(trackComments);
         }
+
+        setLoading(false);
     }
+  }, [id, tracks]);
+  
+  const handleAddComment = (newComment: any) => {
+    setTrackComments(prev => [newComment, ...prev]);
+  };
+  
+  if (loading) {
+    return (
+      <Box sx={{ py: 8, textAlign: 'center' }}>
+        <Typography>Loading...</Typography>
+      </Box>
+    );
+  }
+  
+  if (!track) {
+    return (
+      <Box sx={{ py: 8, textAlign: 'center' }}>
+        <Typography variant="h5">Track not found</Typography>
+        <Button 
+          startIcon={<ArrowBackIcon />} 
+          onClick={() => router.push('/tracks')}
+          sx={{ mt: 2 }}
+        >
+          Back to Tracks
+        </Button>
+      </Box>
+    );
+  }
+  
+  const handlePlay = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    
+    if (!active || active.id !== track.id) {
+      setActiveTrack(track);
+      playTrack();
+    } else {
+      if (pause) {
+        playTrack();
+      } else {
+        pauseTrack();
+      }
+    }
+  };
+
+  const urlImage = 'http://localhost:5000/' + track.image;
+  
+  return (
+    <MainLayout>
+        <Box>
+            <Box 
+                sx={{ 
+                    background: `linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(18,18,18,1) 100%), url(${urlImage})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    pt: { xs: 12, md: 20 },
+                    pb: { xs: 4, md: 6 },
+                }}
+            >
+                <Container maxWidth="lg">
+                    <Button 
+                        startIcon={<ArrowBackIcon />} 
+                        onClick={() => router.push('/tracks')}
+                        sx={{ mb: 2, color: 'white' }}
+                    >
+                        Back to Tracks
+                    </Button>
+                
+                    <Grid container spacing={4}>
+                        <Grid item xs={12} md={4}>
+                            <Paper
+                                elevation={6}
+                                sx={{
+                                    width: '100%',
+                                    position: 'relative',
+                                    paddingTop: '100%',
+                                    borderRadius: 2,
+                                    overflow: 'hidden',
+                                    boxShadow: '0 20px 40px rgba(0,0,0,0.3)',
+                                    transition: 'transform 0.3s ease',
+                                    '&:hover': {
+                                        transform: 'scale(1.02)',
+                                    },
+                                }}
+                            >
+                                <Box
+                                    component="img"
+                                    src={urlImage}
+                                    alt={track.title}
+                                    sx={{
+                                        position: 'absolute',
+                                        top: 0,
+                                        left: 0,
+                                        width: '100%',
+                                        height: '100%',
+                                        objectFit: 'cover',
+                                    }}
+                                />
+                            </Paper>
+                        </Grid>
+                        
+                        <Grid item xs={12} md={8}>
+                            <Chip 
+                                label={track.genre} 
+                                color="primary" 
+                                size="small" 
+                                sx={{ mb: 2 }} 
+                            />
+                            <Typography variant="h2" component="h1" fontWeight={700} gutterBottom color="white">
+                                {track.title}
+                            </Typography>
+                            <Typography variant="h5" gutterBottom color="white">
+                                {track.artist}
+                            </Typography>
+                            <Typography variant="body1" color="white" gutterBottom>
+                                {track.duration} • Released: {new Date(track.releaseDate).toLocaleDateString()}
+                            </Typography>
+                            
+                            <Stack direction="row" spacing={2} sx={{ mt: 3 }}>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    size="large"
+                                    startIcon={<PlayArrowIcon />}
+                                    sx={{ px: 4 }}
+                                    onClick={handlePlay}
+                                >
+                                    Play
+                                </Button>
+                                <IconButton sx={{ color: 'white', bgcolor: 'rgba(255,255,255,0.1)' }}>
+                                    <FavoriteIcon />
+                                </IconButton>
+                                <IconButton sx={{ color: 'white', bgcolor: 'rgba(255,255,255,0.1)' }}>
+                                    <AddIcon />
+                                </IconButton>
+                                <IconButton sx={{ color: 'white', bgcolor: 'rgba(255,255,255,0.1)' }}>
+                                    <ShareIcon />
+                                </IconButton>
+                            </Stack>
+                        </Grid>
+                    </Grid>
+                </Container>
+            </Box>
+            
+            <Container maxWidth="lg" sx={{ py: 4 }}>
+                <Grid container spacing={4}>
+                    <Grid item xs={12} md={8}>
+                        <Typography variant="h4" gutterBottom fontWeight={600}>
+                            About this track
+                        </Typography>
+                        <Typography variant="body1" paragraph>
+                            {track.description}
+                        </Typography>
+                        
+                        <Divider sx={{ my: 4, borderColor: 'rgba(255, 255, 255, 0.1)' }} />
+                        
+                        <Box sx={{ mt: 4 }}>
+                            <Typography variant="h5" gutterBottom fontWeight={600}>
+                                Comments ({trackComments.length})
+                            </Typography>
+                            <CommentForm onAddComment={handleAddComment} />
+                            <CommentList comments={trackComments} />
+                        </Box>
+                    </Grid>
+                
+                    <Grid item xs={12} md={4}>
+                        <Paper sx={{ p: 3, bgcolor: 'background.paper', borderRadius: 2, mt: 3 }}>
+                            <Typography variant="subtitle1" gutterBottom fontWeight={600}>
+                                Track Stats
+                            </Typography>
+                            <Grid container spacing={2} sx={{ mt: 1 }}>
+                                <Grid item xs={6}>
+                                    <Typography variant="caption" color="text.secondary">
+                                        Popularity
+                                    </Typography>
+                                    <Typography variant="h6">
+                                        {track.popularity}/100
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <Typography variant="caption" color="text.secondary">
+                                        Duration
+                                    </Typography>
+                                    <Typography variant="h6">
+                                        {track.duration}
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Divider sx={{ my: 1, borderColor: 'rgba(255, 255, 255, 0.1)' }} />
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <Typography variant="caption" color="text.secondary">
+                                        Released
+                                    </Typography>
+                                    <Typography variant="h6">
+                                        {new Date(track.releaseDate).getFullYear()}
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <Typography variant="caption" color="text.secondary">
+                                        Comments
+                                    </Typography>
+                                    <Typography variant="h6">
+                                        {trackComments.length}
+                                    </Typography>
+                                </Grid>
+                            </Grid>
+                        </Paper>
+                    </Grid>
+                </Grid>
+            </Container>
+        </Box>
+    </MainLayout>
+  );
 }
+
+export default TrackDetailPage;
