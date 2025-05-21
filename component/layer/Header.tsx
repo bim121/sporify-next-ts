@@ -2,20 +2,19 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { 
-  AppBar, 
-  Toolbar, 
-  Typography, 
-  IconButton, 
-  Box, 
-  InputBase, 
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  IconButton,
+  InputBase,
   alpha,
-  Stack,
-  Avatar
+  Box,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle'; // <- Іконка профілю
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -71,27 +70,37 @@ interface HeaderProps {
 function Header({ toggleNav }: HeaderProps) {
   return (
     <AppBar position="fixed" sx={{ backgroundColor: (theme) => theme.palette.grey[800] }}>
-        <Toolbar>
-            <IconButton
-                edge="start"
-                color="inherit"
-                aria-label="open drawer"
-                onClick={toggleNav}
-                sx={{ mr: 2 }}
-            >
-                <MenuIcon />
-            </IconButton>
+      <Toolbar sx={{ justifyContent: 'space-between' }}>
+        <Box display="flex" alignItems="center">
+          <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="open drawer"
+            onClick={toggleNav}
+            sx={{ mr: 2 }}
+          >
+            <MenuIcon />
+          </IconButton>
 
-            <Link href="/" passHref legacyBehavior>
-                <a style={{ textDecoration: 'none' }}>
-                    <Logo variant="h5" sx={{ flexGrow: { xs: 1, sm: 0 }, color: 'white' }}>
-                    MusicCreate
-                    </Logo>
-                </a>
-            </Link>
-        </Toolbar>
+          <Link href="/" passHref legacyBehavior>
+            <a style={{ textDecoration: 'none' }}>
+              <Logo variant="h5" sx={{ color: 'white' }}>
+                MusicCreate
+              </Logo>
+            </a>
+          </Link>
+        </Box>
+
+        <Box display="flex" alignItems="center">
+          <Link href="./Auth" passHref legacyBehavior>
+            <IconButton sx={{ ml: 1 }} color="inherit">
+              <AccountCircleIcon />
+            </IconButton>
+          </Link>
+        </Box>
+      </Toolbar>
     </AppBar>
-    );
+  );
 }
 
 export default Header;
