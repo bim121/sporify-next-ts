@@ -148,7 +148,7 @@ function TracksPage() {
                                         <ListItemAvatar>
                                         <Avatar
                                             variant="rounded"
-                                            src={'http://localhost:5000/' + track.image}
+                                            src={track.image}
                                             alt={track.title}
                                             sx={{ width: 56, height: 56 }}
                                         />

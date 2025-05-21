@@ -15,6 +15,7 @@ import { styled } from '@mui/material/styles';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'; // <- Іконка профілю
+import SignInButton from '../SignInButton';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -92,11 +93,7 @@ function Header({ toggleNav }: HeaderProps) {
         </Box>
 
         <Box display="flex" alignItems="center">
-          <Link href="./Auth" passHref legacyBehavior>
-            <IconButton sx={{ ml: 1 }} color="inherit">
-              <AccountCircleIcon />
-            </IconButton>
-          </Link>
+          <SignInButton />
         </Box>
       </Toolbar>
     </AppBar>

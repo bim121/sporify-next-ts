@@ -18,6 +18,7 @@ import AddBoxIcon from '@mui/icons-material/AddBox';
 import { styled } from '@mui/material/styles';
 import { useRouter } from 'next/navigation';
 import { usePathname } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 
 const DrawerHeader = styled(Box)(({ theme }) => ({
   padding: theme.spacing(3),
@@ -65,6 +66,13 @@ function Navbar({ open, onClose }: NavbarProps) {
     const router = useRouter();
     const pathname = usePathname();
 
+    const { data: session } = useSession();
+    const isLoggedIn = !!session;
+
+    const visibleNavigationItems = isLoggedIn
+      ? navigationItems
+      : navigationItems.filter(item => item.path === '/');
+
     const handleNavigation = (path: string) => {
         router.push(path);
         onClose();
@@ -89,21 +97,21 @@ function Navbar({ open, onClose }: NavbarProps) {
         <Divider sx={{ backgroundColor: 'rgba(255, 255, 255, 0.1)' }} />
         
         <List>
-            {navigationItems.map((item) => (
-            <ListItem key={item.text} disablePadding>
-                <NavItem
-                selected={pathname === item.path}
-                onClick={() => handleNavigation(item.path)}
-                >
-                <ListItemIcon sx={{ color: 'text.secondary', minWidth: 40 }}>
-                    {item.icon}
-                </ListItemIcon>
-                <ListItemText 
-                    primary={item.text} 
-                    primaryTypographyProps={{ fontWeight: pathname === item.path ? 700 : 400 }}
-                />
-                </NavItem>
-            </ListItem>
+            {visibleNavigationItems.map((item) => (
+              <ListItem key={item.text} disablePadding>
+                  <NavItem
+                  selected={pathname === item.path}
+                  onClick={() => handleNavigation(item.path)}
+                  >
+                  <ListItemIcon sx={{ color: 'text.secondary', minWidth: 40 }}>
+                      {item.icon}
+                  </ListItemIcon>
+                  <ListItemText 
+                      primary={item.text} 
+                      primaryTypographyProps={{ fontWeight: pathname === item.path ? 700 : 400 }}
+                  />
+                  </NavItem>
+              </ListItem>
             ))}
         </List>
         <Divider sx={{ backgroundColor: 'rgba(255, 255, 255, 0.1)', my: 1 }} />

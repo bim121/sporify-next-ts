@@ -80,8 +80,8 @@ export function AudioPlayer() {
         }
 
         if (active) {
-            if (audio.src !== 'http://localhost:5000/' + active.audio) {
-                audio.src = 'http://localhost:5000/' + active.audio;
+            if (audio.src !== active.audio) {
+                audio.src = active.audio;
             }
 
             audio.onloadedmetadata = () => {
@@ -158,7 +158,7 @@ export function AudioPlayer() {
             </IconButton>
             <TrackInfo>
                 <TrackImage
-                    src={'http://localhost:5000/' + active.image}
+                    src={active.image}
                     alt={active.title}
                 />
                 <Box>

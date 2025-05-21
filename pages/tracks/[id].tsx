@@ -100,7 +100,7 @@ function TrackDetailPage() {
     }
   };
 
-  const urlImage = 'http://localhost:5000/' + track.image;
+  const urlImage = track.image;
   
   return (
     <MainLayout>
