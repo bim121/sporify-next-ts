@@ -27,15 +27,16 @@ import { useTypedSelector } from '@/hooks/useTypeSelector';
 import MainLayout from '@/layouts/MainLayout';
 import { Comment } from "@/types/comment";
 import { useActions } from '@/hooks/useAction';
+import { getSession, useSession } from 'next-auth/react';
 
 function TrackDetailPage() {
   const [track, setTrack] = useState<ITrack | null>(null);
-  const [trackComments, setTrackComments] = useState<Comment[]>([]); 
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const { data: session } = useSession();
   const { id } = router.query;
   useFetcher(fetchTracks);
-  const {tracks, error} = useTypedSelector(state => state.track)
+  const {tracks} = useTypedSelector(state => state.track)
   const { playTrack, pauseTrack, setActiveTrack } = useActions();
   const { active, pause } = useTypedSelector(state => state.player);
 
@@ -50,16 +51,40 @@ function TrackDetailPage() {
         const foundTrack = tracks.find(t =>Number(t.id) === Number(id));
         if (foundTrack) {
             setTrack(foundTrack);
-            const trackComments = comments[Number(foundTrack.id)] || [];
-            setTrackComments(trackComments);
         }
 
         setLoading(false);
     }
   }, [id, tracks]);
   
-  const handleAddComment = (newComment: any) => {
-    setTrackComments(prev => [newComment, ...prev]);
+  const handleAddComment = async (newComment: any) => {
+    try {
+        const accessToken = (session as any)?.backendTokens.accessToken;
+
+        const response = await fetch(`http://localhost:5000/tracks/comment/${track?.id}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                ...(accessToken && {
+                Authorization: `Bearer ${accessToken}`,
+                }),
+            },
+            body: JSON.stringify(newComment),
+        });
+
+        if (!response.ok) {
+        throw new Error("Ошибка при отправке комментария");
+        }
+
+        const data = await response.json();
+
+        const updatedTrackRes = await fetch(`http://localhost:5000/tracks/${track?.id}`);
+        const updatedTrack = await updatedTrackRes.json();
+        setTrack(updatedTrack);
+        console.log("Комментарий создан:", data);
+    } catch (error) {
+        console.error("Ошибка:", error);
+    }
   };
   
   if (loading) {
@@ -213,10 +238,10 @@ function TrackDetailPage() {
                         
                         <Box sx={{ mt: 4 }}>
                             <Typography variant="h5" gutterBottom fontWeight={600}>
-                                Comments ({trackComments.length})
+                                Comments ({track.comments.length})
                             </Typography>
                             <CommentForm onAddComment={handleAddComment} />
-                            <CommentList comments={trackComments} />
+                            <CommentList comments={track.comments} />
                         </Box>
                     </Grid>
                 
@@ -258,7 +283,7 @@ function TrackDetailPage() {
                                         Comments
                                     </Typography>
                                     <Typography variant="h6">
-                                        {trackComments.length}
+                                        {track.comments.length}
                                     </Typography>
                                 </Grid>
                             </Grid>

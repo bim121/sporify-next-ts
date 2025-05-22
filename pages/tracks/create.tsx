@@ -109,7 +109,6 @@ function AddTrackPage() {
 
     axios.post('http://localhost:5000/tracks', data)
         .then((resp) => {
-            console.log('Response:', resp);
             router.push('/tracks');
         })
         .catch((e) => {

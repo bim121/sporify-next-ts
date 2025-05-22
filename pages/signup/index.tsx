@@ -38,7 +38,6 @@ const SignupPage = () => {
 
     const response = await res.json();
     alert("User Registered!");
-    console.log({ response });
   };
 
   return (

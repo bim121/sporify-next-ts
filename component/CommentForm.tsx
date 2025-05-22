@@ -15,10 +15,7 @@ function CommentForm({ onAddComment }: any) {
         if (comment.trim() === '') return;
         
         const newComment = {
-        id: Date.now(),
-        user: 'CurrentUser',
-        text: comment,
-        timestamp: new Date().toISOString()
+            text: comment,
         };
         
         onAddComment(newComment);

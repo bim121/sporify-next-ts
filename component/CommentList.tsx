@@ -37,32 +37,26 @@ function CommentList({ comments }: any) {
         {comments.map((comment: any, index: any) => (
             <React.Fragment key={comment.id}>
             <ListItem alignItems="flex-start" sx={{ px: 0 }}>
-                <ListItemAvatar>
-                <Avatar 
-                    alt={comment.user} 
-                    src={`https://i.pravatar.cc/150?u=${comment.user}`} 
-                />
-                </ListItemAvatar>
                 <ListItemText
-                primary={
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Typography variant="subtitle2" component="span">
-                        {comment.user}
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary" component="span">
-                        {formatDate(comment.timestamp)}
-                    </Typography>
-                    </Box>
-                }
-                secondary={
-                    <Typography
-                    variant="body2"
-                    color="text.primary"
-                    sx={{ mt: 1 }}
-                    >
-                    {comment.text}
-                    </Typography>
-                }
+                    primary={
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <Typography variant="subtitle2" component="span">
+                                {comment.user.name}
+                            </Typography>
+                            <Typography variant="caption" color="text.secondary" component="span">
+                                {formatDate(comment.timestamp)}
+                            </Typography>
+                        </Box>
+                    }
+                    secondary={
+                        <Typography
+                            variant="body2"
+                            color="text.primary"
+                            sx={{ mt: 1 }}
+                        >
+                        {comment.text}
+                        </Typography>
+                    }
                 />
             </ListItem>
             {index < comments.length - 1 && (

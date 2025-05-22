@@ -1,8 +1,15 @@
-export interface IComment{
-    _id: string;
-    username: string;
-    text: string;
+export interface IComment {
+  id: number; 
+  text: string;
+  user: IUser;
 }
+
+export interface IUser{
+  id: number; 
+  email: string;
+  username: string;
+}
+
 
 export interface ITrack{
     id: string;
