@@ -19,6 +19,7 @@ import { styled } from '@mui/material/styles';
 import { useRouter } from 'next/navigation';
 import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import QueueMusicIcon from '@mui/icons-material/QueueMusic';
 
 const DrawerHeader = styled(Box)(({ theme }) => ({
   padding: theme.spacing(3),
@@ -56,6 +57,10 @@ const navigationItems = [
   { text: 'Add Track', icon: <AddBoxIcon />, path: '/tracks/create' }
 ];
 
+const collectionsItems = [
+  { text: 'Your Playlists', icon: <QueueMusicIcon />, path: '/playlists' },
+];
+
 
 interface NavbarProps {
   open: boolean;
@@ -80,41 +85,65 @@ function Navbar({ open, onClose }: NavbarProps) {
 
     return (
         <NavDrawer
-        variant="temporary"
-        anchor="left"
-        open={open}
-        onClose={onClose}
-        ModalProps={{
-            keepMounted: true,
-        }}
+          variant="temporary"
+          anchor="left"
+          open={open}
+          onClose={onClose}
+          ModalProps={{
+              keepMounted: true,
+          }}
         >
-        <DrawerHeader>
-            <Typography variant="h6" color="black" fontWeight="bold">
-            MusicCreate
-            </Typography>
-        </DrawerHeader>
-        
-        <Divider sx={{ backgroundColor: 'rgba(255, 255, 255, 0.1)' }} />
-        
-        <List>
-            {visibleNavigationItems.map((item) => (
-              <ListItem key={item.text} disablePadding>
-                  <NavItem
-                  selected={pathname === item.path}
-                  onClick={() => handleNavigation(item.path)}
-                  >
-                  <ListItemIcon sx={{ color: 'text.secondary', minWidth: 40 }}>
+          <DrawerHeader>
+              <Typography variant="h6" color="black" fontWeight="bold">
+                MusicCreate
+              </Typography>
+          </DrawerHeader>
+          
+          <Divider sx={{ backgroundColor: 'rgba(255, 255, 255, 0.1)' }} />
+          
+          <List>
+              {visibleNavigationItems.map((item) => (
+                <ListItem key={item.text} disablePadding>
+                    <NavItem
+                      selected={pathname === item.path}
+                      onClick={() => handleNavigation(item.path)}
+                    >
+                    <ListItemIcon sx={{ color: 'text.secondary', minWidth: 40 }}>
                       {item.icon}
-                  </ListItemIcon>
-                  <ListItemText 
+                    </ListItemIcon>
+                    <ListItemText 
                       primary={item.text} 
                       primaryTypographyProps={{ fontWeight: pathname === item.path ? 700 : 400 }}
+                    />
+                    </NavItem>
+                </ListItem>
+              ))}
+          </List>
+          <Divider sx={{ backgroundColor: 'rgba(255, 255, 255, 0.1)', my: 1 }} />
+          <Box sx={{ px: 2, py: 1 }}>
+            <Typography variant="subtitle2" color="text.secondary">
+              YOUR COLLECTION
+            </Typography>
+          </Box>
+      
+          <List>
+            {collectionsItems.map((item) => (
+              <ListItem key={item.text} disablePadding>
+                <NavItem
+                  selected={pathname === item.path}
+                  onClick={() => handleNavigation(item.path)}
+                >
+                  <ListItemIcon sx={{ color: 'text.secondary', minWidth: 40 }}>
+                    {item.icon}
+                  </ListItemIcon>
+                  <ListItemText 
+                    primary={item.text} 
+                    primaryTypographyProps={{ fontWeight: pathname === item.path ? 700 : 400 }}
                   />
-                  </NavItem>
+                </NavItem>
               </ListItem>
             ))}
-        </List>
-        <Divider sx={{ backgroundColor: 'rgba(255, 255, 255, 0.1)', my: 1 }} />
+          </List>
         </NavDrawer>
     );
 }

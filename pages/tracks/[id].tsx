@@ -28,6 +28,7 @@ import MainLayout from '@/layouts/MainLayout';
 import { Comment } from "@/types/comment";
 import { useActions } from '@/hooks/useAction';
 import { getSession, useSession } from 'next-auth/react';
+import AddToPlaylistDialog from '@/component/AddToPlaylistDialog';
 
 function TrackDetailPage() {
   const [track, setTrack] = useState<ITrack | null>(null);
@@ -39,6 +40,7 @@ function TrackDetailPage() {
   const {tracks} = useTypedSelector(state => state.track)
   const { playTrack, pauseTrack, setActiveTrack } = useActions();
   const { active, pause } = useTypedSelector(state => state.player);
+  const [playlistDialogOpen, setPlaylistDialogOpen] = useState(false);
 
   useEffect(() => {
     if (!tracks.length) {
@@ -85,6 +87,10 @@ function TrackDetailPage() {
     } catch (error) {
         console.error("Ошибка:", error);
     }
+  };
+
+  const handleAddToPlaylist = (playlistId: any) => {
+    console.log(`Adding track ${id} to playlist ${playlistId}`);
   };
   
   if (loading) {
@@ -213,7 +219,7 @@ function TrackDetailPage() {
                                     <FavoriteIcon />
                                 </IconButton>
                                 <IconButton sx={{ color: 'white', bgcolor: 'rgba(255,255,255,0.1)' }}>
-                                    <AddIcon />
+                                    <AddIcon onClick={() => setPlaylistDialogOpen(true)}/>
                                 </IconButton>
                                 <IconButton sx={{ color: 'white', bgcolor: 'rgba(255,255,255,0.1)' }}>
                                     <ShareIcon />
@@ -291,6 +297,11 @@ function TrackDetailPage() {
                     </Grid>
                 </Grid>
             </Container>
+            <AddToPlaylistDialog
+                open={playlistDialogOpen}
+                onClose={() => setPlaylistDialogOpen(false)}
+                onAddToPlaylist={handleAddToPlaylist}
+            />                          
         </Box>
     </MainLayout>
   );
