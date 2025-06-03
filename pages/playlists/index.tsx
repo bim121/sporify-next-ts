@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Container,
@@ -16,16 +16,19 @@ import {
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { useRouter } from 'next/router';
-import playlists from '@/data/playlist';
 import MainLayout from '@/layouts/MainLayout';
+import UploadIcon from '@mui/icons-material/Upload';
+import axios from 'axios';
 
 function PlaylistsPage() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [newPlaylist, setNewPlaylist] = useState({
     name: '',
-    description: ''
+    description: '',
+    coverImageFile: null as File | null,
   });
+  const [playlists, setPlaylists] = useState<any[]>([]);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -33,13 +36,50 @@ function PlaylistsPage() {
 
   const handleClose = () => {
     setOpen(false);
-    setNewPlaylist({ name: '', description: '' });
+    setNewPlaylist({ name: '', description: '', coverImageFile: null  });
   };
 
-  const handleCreatePlaylist = () => {
-    console.log('Creating playlist:', newPlaylist);
-    handleClose();
+  useEffect(() => {
+    const fetchPlaylists = async () => {
+      try {
+        const res =  await axios.get('http://localhost:5000/playlists');
+        if (!res) throw new Error('Failed to fetch playlists');
+        setPlaylists(res.data);
+      } catch (err: any) {
+        console.log(err);
+      } 
+    };
+
+    fetchPlaylists();
+  }, []);
+
+  const handleCreatePlaylist = async () => {
+    if (!newPlaylist.coverImageFile) {
+      alert("Please upload a cover image.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('name', newPlaylist.name);
+    formData.append('description', newPlaylist.description);
+    formData.append('image', newPlaylist.coverImageFile);
+
+    try {
+      const res = await fetch('http://localhost:5000/playlists', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!res.ok) throw new Error('Failed to create playlist');
+      const data = await res.json();
+      console.log('Created playlist:', data);
+      handleClose();
+    } catch (err) {
+      console.error(err);
+      alert('Something went wrong while creating playlist.');
+    }
   };
+
 
   return (
     <MainLayout>
@@ -117,6 +157,34 @@ function PlaylistsPage() {
                 value={newPlaylist.description}
                 onChange={(e) => setNewPlaylist({ ...newPlaylist, description: e.target.value })}
               />
+              <Box sx={{ mt: 2 }}>
+                <input
+                  accept="image/*"
+                  id="upload-cover"
+                  type="file"
+                  style={{ display: 'none' }}
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      setNewPlaylist(prev => ({ ...prev, coverImageFile: file }));
+                    }
+                  }}
+                />
+                <label htmlFor="upload-cover">
+                  <Button
+                    variant="outlined"
+                    component="span"
+                    startIcon={<UploadIcon />}
+                  >
+                    Upload Cover Image
+                  </Button>
+                </label>
+                {newPlaylist.coverImageFile && (
+                  <Typography variant="body2" sx={{ mt: 1 }}>
+                    Selected: {newPlaylist.coverImageFile.name}
+                  </Typography>
+                )}
+              </Box>
             </DialogContent>
             <DialogActions>
               <Button onClick={handleClose}>Cancel</Button>

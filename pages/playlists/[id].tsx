@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   Container,
@@ -18,11 +18,34 @@ import { useRouter } from 'next/router';
 import { playlists } from '@/data/playlist';
 import tracks from '@/data/tracks';
 import MainLayout from '@/layouts/MainLayout';
+import axios from 'axios';
+import { useTypedSelector } from '@/hooks/useTypeSelector';
+import { useActions } from '@/hooks/useAction';
 
 function PlaylistDetailPage() {
   const router = useRouter();
   const { id } = router.query;
-  const playlist = playlists.find(p => p.id === Number(id));
+  const [playlists, setPlaylists] = useState<any[]>([]);
+  const [playlist, setPlaylist] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchPlaylists = async () => {
+      try {
+        const res =  await axios.get('http://localhost:5000/playlists');
+        if (!res) throw new Error('Failed to fetch playlists');
+        setPlaylists(res.data);
+        const playlist = res.data.find((p: any) => p.id === Number(id));
+        setPlaylist(playlist);
+      } catch (err: any) {
+        console.log(err);
+      } 
+    };
+  
+    fetchPlaylists();
+  }, []);
+
+  const { playTrack, pauseTrack, setActiveTrack } = useActions();
+  const { active, pause } = useTypedSelector(state => state.player);
 
   if (!playlist) {
     return (
@@ -32,7 +55,7 @@ function PlaylistDetailPage() {
     );
   }
 
-  const playlistTracks = tracks.filter((track: any) => playlist.tracks.includes(track.id));
+  const playlistTracks = playlist.tracks;
 
   return (
     <MainLayout>
@@ -103,7 +126,21 @@ function PlaylistDetailPage() {
                       }
                     />
                     <IconButton sx={{ color: 'primary.main', mr: 2 }}>
-                      <PlayArrowIcon />
+                      <PlayArrowIcon 
+                        onClick={(e: any) => {
+                          e.stopPropagation();
+                          if (!active || active.id !== track.id) {
+                            setActiveTrack(track);
+                            playTrack();
+                          } else {
+                            if (pause) {
+                              playTrack();
+                            } else {
+                              pauseTrack();
+                            }
+                          }
+                        }}
+                      />
                     </IconButton>
                   </ListItem>
                   {index < playlistTracks.length - 1 && (

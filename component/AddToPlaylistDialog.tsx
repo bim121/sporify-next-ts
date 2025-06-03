@@ -1,4 +1,5 @@
-import React from 'react';
+"use client"
+import React, { useEffect, useState } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -11,9 +12,25 @@ import {
   IconButton
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import playlists from '@/data/playlist';
+import axios from 'axios';
 
 function AddToPlaylistDialog({ open, onClose, onAddToPlaylist }: any) {
+  const [playlists, setPlaylists] = useState<any>([]);
+
+  useEffect(() => {
+    const fetchPlaylists = async () => {
+      try {
+        const res =  await axios.get('http://localhost:5000/playlists');
+        if (!res) throw new Error('Failed to fetch playlists');
+        setPlaylists(res.data);
+      } catch (err: any) {
+        console.log(err);
+      } 
+    };
+  
+    fetchPlaylists();
+  }, []);
+  
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>Add to Playlist</DialogTitle>

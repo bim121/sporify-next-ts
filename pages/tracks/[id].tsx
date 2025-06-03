@@ -29,6 +29,7 @@ import { Comment } from "@/types/comment";
 import { useActions } from '@/hooks/useAction';
 import { getSession, useSession } from 'next-auth/react';
 import AddToPlaylistDialog from '@/component/AddToPlaylistDialog';
+import axios from 'axios';
 
 function TrackDetailPage() {
   const [track, setTrack] = useState<ITrack | null>(null);
@@ -89,8 +90,15 @@ function TrackDetailPage() {
     }
   };
 
-  const handleAddToPlaylist = (playlistId: any) => {
-    console.log(`Adding track ${id} to playlist ${playlistId}`);
+  const handleAddToPlaylist = async (playlistId: any) => {
+    try {
+        const response = await axios.post(`http://localhost:5000/playlists/${playlistId}/tracks/${track?.id}`);
+        console.log('Track added successfully:', response.data);
+        return response.data;
+    } catch (error: any) {
+        console.error('Failed to add track:', error);
+        throw error;
+    }
   };
   
   if (loading) {
